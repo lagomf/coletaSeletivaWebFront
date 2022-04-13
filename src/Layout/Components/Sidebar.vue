@@ -33,175 +33,71 @@
                 isOpen: false,
                 sidebarActive: false,
 
-                menu: [
+                menuItems: [
                     {
                         header: true,
-                        title: 'Main Navigation',
+                        title: 'Geral',
                     },
                     {
-                        title: 'Dashboards',
+                        title: 'Home',
                         icon: 'pe-7s-rocket',
-                        child: [
-                            {
-                                href: '/',
-                                title: 'Analytics',
-                            },
-                        ]
+                        href: '/home',
+                    },
+                    // {
+                    //     title: 'Dashboards',
+                    //     icon: 'pe-7s-rocket',
+                    //     child: [
+                    //         {
+                    //             href: '/',
+                    //             title: 'Analytics',
+                    //         },
+                    //     ]
+                    // },
+                    
+                    {
+                        header: true,
+                        title: 'Gerenciamento',
                     },
                     {
-                        title: 'Pages',
-                        icon: 'pe-7s-browser',
-                        child: [
-                            {
-                                href: '/pages/login-boxed',
-                                title: 'Login Boxed',
-                            },
-                            {
-                                href: '/pages/register-boxed',
-                                title: 'Register Boxed',
-                            },
-                            {
-                                href: '/pages/forgot-password-boxed',
-                                title: 'Forgot Password Boxed',
-                            },
-                        ]
+                        title: 'Usuários',
+                        icon: 'pe-7s-rocket',
+                        href: '/users',
+                        permission: 'view users'
+                    },
+                    {
+                        title: 'Caminhões',
+                        icon: 'pe-7s-rocket',
+                        href: '/vehicles',
+                        permission: 'view vehicles'
                     },
                     {
                         header: true,
-                        title: 'UI Components',
+                        title: 'Suporte',
                     },
                     {
-                        icon: 'pe-7s-diamond',
-                        title: 'Elements',
-                        child: [
-                            {
-                                title: 'Buttons',
-                                child: [
-                                    {
-                                        title: 'Standard',
-                                        href: '/elements/buttons-standard',
-                                    },
-                                ]
-                            },
-                            {
-                                title: 'Dropdowns',
-                                href: '/elements/dropdowns',
-                            },
-                            {
-                                title: 'Icons',
-                                href: '/elements/icons',
-                            },
-                            {
-                                title: 'Badges',
-                                href: '/elements/badges-labels',
-                            },
-                            {
-                                title: 'Cards',
-                                href: '/elements/cards',
-                            },
-                            {
-                                title: 'List Groups',
-                                href: '/elements/list-group',
-                            },
-                            {
-                                title: 'Timeline',
-                                href: '/elements/timelines',
-                            },
-                            {
-                                title: 'Utilities',
-                                href: '/elements/utilities',
-                            },
-                        ],
-                    },
-                    {
-                        icon: 'pe-7s-car',
-                        title: 'Components',
-                        child: [
-                            {
-                                title: 'Tabs',
-                                href: '/components/tabs',
-                            },
-                            {
-                                title: 'Accordions',
-                                href: '/components/accordions',
-                            },
-                            {
-                                title: 'Modals',
-                                href: '/components/modals',
-                            },
-                            {
-                                title: 'Progress Bar',
-                                href: '/components/progress-bar',
-                            },
-                            {
-                                title: 'Tooltips & Popovers',
-                                href: '/components/tooltips-popovers',
-                            },
-                            {
-                                title: 'Carousel',
-                                href: '/components/carousel',
-                            },
-                            {
-                                title: 'Pagination',
-                                href: '/components/pagination',
-                            },
-                            {
-                                title: 'Maps',
-                                href: '/components/maps',
-                            },
-                        ],
-                    },
-                    {
-                        icon: 'pe-7s-display2',
-                        title: 'Tables',
-                        child: [
-                            {
-                                title: 'Regular Tables',
-                                href: '/tables/regular-tables',
-                            },
-                        ]
-                    },
-                    {
-                        header: true,
-                        title: 'Dashboard Boxes',
-                    },
-                    {
-                        icon: 'pe-7s-graph2',
-                        title: 'Chart Boxes',
-                        href: '/widgets/chart-boxes-3',
-                    },
-                    {
-                        header: true,
-                        title: 'Forms',
-                    },
-                    {
-                        icon: 'pe-7s-light',
-                        title: 'Elements',
-                        child: [
-                            {
-                                title: 'Controls',
-                                href: '/forms/controls',
-                            },
-                            {
-                                title: 'Layouts',
-                                href: '/forms/layouts',
-                            },
-                        ],
-                    },
-                    {
-                        header: true,
-                        title: 'Charts',
-                    },
-                    {
-                        icon: 'pe-7s-graph2',
-                        title: 'ChartJS',
-                        href: '/charts/chartjs',
+                        title: 'Solicitações',
+                        icon: 'pe-7s-rocket',
+                        href: '/vehicles',
                     },
                 ],
                 collapsed: true,
 
                 windowWidth: 0,
 
+            }
+        },
+        computed: {
+            menu() {
+                return this.menuItems.filter(item => {
+                    if(item.permission){
+                        if(this.$store.getters.StatePermissions){
+                            return this.$store.getters.StatePermissions.includes(item.permission);
+                        }else{
+                            return false;
+                        }
+                    }
+                    return true;
+                })
             }
         },
         props: {

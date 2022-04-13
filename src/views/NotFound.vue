@@ -9,34 +9,21 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <div class="h5 modal-title">
-                                    Forgot your Password?
+                                    Página não encontrada!
                                     <h6 class="mt-1 mb-0 opacity-8">
-                                        <span>Use the form below to recover it.</span>
+                                        <span>Pode ser que você esteja aqui por engano.</span>
                                     </h6>
                                 </div>
                             </div>
                             <div class="modal-body">
-                                <div>
-                                    <Form>
-                                        <b-row form>
-                                            <b-col md="12">
-                                                <b-form-group>
-                                                    <Label for="exampleEmail">Email</Label>
-                                                    <b-form-input type="email" name="email" id="exampleEmail"
-                                                                  placeholder="Email here..."/>
-                                                </b-form-group>
-                                            </b-col>
-                                        </b-row>
-                                    </Form>
+                                <div class="text-center">
+                                    <img width="50%" src="@/assets/images/responses/notfound.svg" alt="">
                                 </div>
-                                <div class="divider"/>
-                                <h6 class="mb-0">
-                                    <a href="javascript:void(0);" class="text-primary">Sign in existing account</a>
-                                </h6>
+                                
                             </div>
                             <div class="modal-footer clearfix">
                                 <div class="float-right">
-                                    <b-button variant="primary" size="lg">Recover Password</b-button>
+                                    <router-link :to="{name: 'home'}"><b-button variant="primary" size="lg">Voltar</b-button></router-link>
                                 </div>
                             </div>
                         </div>
@@ -49,3 +36,18 @@
         </div>
     </div>
 </template>
+<script>
+export default {
+  name: "NotFound",
+  components: {},
+  data() {
+    return {
+      
+    };
+  },
+  methods: {
+    
+  },
+};
+</script>
+

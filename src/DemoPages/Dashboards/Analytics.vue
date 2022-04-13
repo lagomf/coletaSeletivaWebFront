@@ -5,7 +5,7 @@
             <div class="card-header-tab card-header">
                 <div class="card-header-title font-size-lg text-capitalize font-weight-normal">
                     <i class="header-icon lnr-charts icon-gradient bg-happy-green"> </i>
-                    Data Statistics
+                    Data Meu cu
                 </div>
             </div>
             <div class="no-gutters row">

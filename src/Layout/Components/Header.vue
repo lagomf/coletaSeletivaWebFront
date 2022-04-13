@@ -2,9 +2,6 @@
     <div class="app-header header-shadow">
         <div class="logo-src"/>
         <div class="app-header__content">
-            <div class="app-header-left">
-                <SearchBox/>
-            </div>
             <div class="app-header-right">
                 <UserArea/>
             </div>
@@ -31,8 +28,6 @@
 </template>
 
 <script>
-
-    import SearchBox from './Header/SearchBox';
     import UserArea from './Header/HeaderUserArea';
 
     import {library} from '@fortawesome/fontawesome-svg-core'
@@ -47,7 +42,6 @@
     export default {
         name: "Header",
         components: {
-            SearchBox,
             UserArea,
             'font-awesome-icon': FontAwesomeIcon,
         },

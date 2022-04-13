@@ -12,9 +12,11 @@
     "@fortawesome/free-solid-svg-icons": "^5.8.1",
     "@fortawesome/vue-fontawesome": "^0.1.6",
     "animate-sass": "^0.8.2",
+    "axios": "^0.26.1",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.18",
     "chart.js": "^2.8.0",
+    "cors": "^2.8.5",
     "es6-promise": "^4.2.6",
     "increase-memory-limit": "^1.0.6",
     "node-sass": "^4.14.1",
@@ -22,13 +24,15 @@
     "perfect-scrollbar": "^1.4.0",
     "popper.js": "^1.15.0",
     "sass-loader": "^7.1.0",
+    "store": "^2.0.12",
     "vue": "^2.6.10",
     "vue-chartjs": "^3.4.2",
     "vue-perfect-scrollbar": "^0.1.0",
     "vue-router": "^3.0.5",
     "vue-sidebar-menu": "^3.7.0",
     "vue2-google-maps": "^0.10.6",
-    "vuex": "^3.1.0"
+    "vuex": "^3.6.2",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.6.0",

@@ -1,9 +1,10 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-
+import Vue from 'vue';
+import Router from 'vue-router';
+import store from "../store";
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
+    mode: 'history',
     scrollBehavior() {
         return window.scrollTo({ top: 0, behavior: 'smooth' });
     },
@@ -13,8 +14,21 @@ export default new Router({
 
         {
             path: '/',
-            name: 'analytics',
-            component: () => import('../DemoPages/Dashboards/Analytics.vue'),
+            name: 'login',
+            meta: {layout: 'userpages' , guest: true},
+            component: () => import('../views/Auth/Login.vue'),
+        },
+        {
+            path: '/register',
+            name: 'register',
+            meta: {layout: 'userpages', guest: true},
+            component: () => import('../views/Auth/Register.vue'),
+        },
+        {
+            path: '/home',
+            name: 'home',
+            meta: {requiresAuth: true},
+            component: () => import('../views/Home/Home.vue'),
         },
 
         // Pages
@@ -159,5 +173,36 @@ export default new Router({
             name: 'chartjs',
             component: () => import('../DemoPages/Charts/Chartjs.vue'),
         },
+        {
+            path: '*',
+            component: () => import('../views/NotFound.vue'),
+            meta: {layout: 'userpages'},
+        },
+        
     ]
-})
+});
+export default router;
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
+      if (store.getters.isAuthenticated) {
+        next();
+        return;
+      }
+      next({name:"login"});
+    } else {
+      next();
+    }
+});
+  
+  router.beforeEach((to, from, next) => {
+    if (to.matched.some((record) => record.meta.guest)) {
+      if (store.getters.isAuthenticated) {
+        next({name:"home"});
+        return;
+      }
+      next();
+    } else {
+      next();
+    }
+});
