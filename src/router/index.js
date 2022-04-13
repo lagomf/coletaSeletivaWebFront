@@ -25,6 +25,19 @@ const router = new Router({
             component: () => import('../views/Auth/Register.vue'),
         },
         {
+            path: '/recover-password',
+            name: 'recover-password',
+            meta: {layout: 'userpages' , guest: true},
+            component: () => import('../views/Auth/ForgotPassword.vue'),
+        },
+        {
+            path: '/reset-password',
+            name: 'reset-password',
+            meta: {layout: 'userpages' , guest: true},
+            props: (route) => ({ urlToken: route.query.token }), 
+            component: () => import('../views/Auth/ResetPassword.vue'),
+        },
+        {
             path: '/home',
             name: 'home',
             meta: {requiresAuth: true},

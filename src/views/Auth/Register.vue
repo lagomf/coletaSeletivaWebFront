@@ -69,13 +69,16 @@
                                     <div class="divider"/>
                                     <h6 class="mb-0">
                                         Já tem uma conta?
-                                        <router-link :to="{name: 'login'}" class="text-primary">Entre aqui</router-link>
+                                        <router-link :to="{name: 'login'}"   class="text-primary">Entre aqui</router-link>
                                         |
-                                        <a href="javascript:void(0);" class="text-secondary">Esqueci minha senha</a>
+                                        <router-link :to="{name: 'recover-password'}"   class="text-secondary">Esqueci minha senha</router-link>
                                     </h6>
+                                    <div v-if="loading" class="text-center mt-3 text-primary">
+                                        <font-awesome-icon icon="spinner" spin fixedWidth size="2x"/>
+                                    </div>
                                 </div>
                                 <div class="modal-footer d-block text-center">
-                                    <b-button color="primary" type="submit" class="btn-wide btn-pill btn-shadow btn-hover-shine"
+                                    <b-button color="primary" type="submit" class="btn-wide btn-pill btn-shadow btn-hover-shine" :disabled="loading"
                                             size="lg">Criar conta
                                     </b-button>
                                 </div>
@@ -93,9 +96,17 @@
 
 <script>
 import axios from 'axios';
+import {
+    faSpinner
+  } from '@fortawesome/free-solid-svg-icons'
+import {library} from '@fortawesome/fontawesome-svg-core'
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
+library.add(
+    faSpinner,
+  );
 export default {
   name: "Register",
-  components: {},
+  components: {'font-awesome-icon': FontAwesomeIcon},
   data() {
     return {
       form: {
@@ -112,6 +123,7 @@ export default {
       showError: false,
       errorMessage: "",
       showSuccess: false,
+      loading: false,
     };
   },
   methods: {
@@ -122,11 +134,14 @@ export default {
             password: ""
         }
         let selfVue = this;
+        this.loading = true;
         await axios.post('register', this.form).then(response => {
+            selfVue.loading = false;
             selfVue.showError = false;
             selfVue.showSuccess = true;
             response;
         },function (error) {
+            selfVue.loading = false;
             selfVue.showSuccess = false;
             selfVue.showError = true;
             if(error.response.status == 422){
@@ -141,7 +156,6 @@ export default {
                 selfVue.errorMessage = "Houve um erro ao realizar seu cadastro, tente novamente mais tarde!";
             }
         });
-        self.console.log(this.formErrors);
         // this.$router.push({name:'login'});
     },
   },

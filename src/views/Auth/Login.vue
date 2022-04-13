@@ -45,9 +45,9 @@
                                 </div>
                                 <div class="modal-footer clearfix">
                                     <div class="float-left">
-                                        <a href="javascript:void(0);" class="btn-lg btn btn-link">Recover
-                                            Password</a>
+                                        <router-link :to="{name: 'recover-password'}" class="text-secondary">Esqueci minha senha</router-link>
                                     </div>
+                                    <font-awesome-icon class="mr-2" icon="spin"/>
                                     <div class="float-right">
                                         <b-button variant="primary" type="submit" size="lg">Login</b-button>
                                     </div>
@@ -65,9 +65,21 @@
 </template>
 <script>
 import { mapActions } from "vuex";
+import {library} from '@fortawesome/fontawesome-svg-core'
+    import {
+        faStar,
+        faPlus
+    } from '@fortawesome/free-solid-svg-icons'
+    import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
+    library.add(
+        faStar,
+        faPlus,
+    );
 export default {
   name: "Login",
-  components: {},
+  components: {
+            'font-awesome-icon': FontAwesomeIcon,
+        },
   data() {
     return {
       form: {
