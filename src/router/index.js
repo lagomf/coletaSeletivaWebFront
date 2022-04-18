@@ -43,9 +43,31 @@ const router = new Router({
             meta: {requiresAuth: true},
             component: () => import('../views/Home/Home.vue'),
         },
-
-        // Pages
-
+        {
+            path: '/profile',
+            name: 'profile',
+            meta: {requiresAuth: true},
+            component: () => import('../views/Profile.vue'),
+        },
+        // Users
+        {
+            path: '/users',
+            name: 'usersIndex',
+            meta: {requiresAuth: true , permission: 'view users'},
+            component: () => import('../views/Users/Index.vue'),
+        },
+        {
+            path: '/users/create',
+            name: 'usersCreate',
+            meta: {requiresAuth: true , permission: 'create users'},
+            component: () => import('../views/Users/Create.vue'),
+        },
+        {
+            path: '/users/:id',
+            name: 'usersShow',
+            meta: {requiresAuth: true , permission: 'view users'},
+            component: () => import('../views/Users/Show.vue'),
+        },
         {
             path: '/pages/login-boxed',
             name: 'login-boxed',
@@ -207,8 +229,22 @@ router.beforeEach((to, from, next) => {
       next();
     }
 });
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some((record) => record.meta.permission)) {
+      if (store.getters.StatePermissions) {
+        if(store.getters.StatePermissions.includes(to.meta.permission)){
+            next();
+            return;
+        }
+      }
+      next({name:"home"});
+    } else {
+      next();
+    }
+});
   
-  router.beforeEach((to, from, next) => {
+router.beforeEach((to, from, next) => {
     if (to.matched.some((record) => record.meta.guest)) {
       if (store.getters.isAuthenticated) {
         next({name:"home"});

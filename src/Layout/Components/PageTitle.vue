@@ -13,13 +13,10 @@
                     </div>
                 </div>
             </div>
-            <div class="page-title-actions">
-                <button type="button" class="btn-shadow mr-3 btn btn-dark">
-                    <font-awesome-icon icon="star"/>
-                </button>
-                <button type="button" class="btn-shadow d-inline-flex align-items-center btn btn-success">
+            <div class="page-title-actions" v-if="canCreate && !!createModelText">
+                <button type="button" class="btn-shadow d-inline-flex align-items-center btn btn-success" @click="$emit('createModelEvent')">
                     <font-awesome-icon class="mr-2" icon="plus"/>
-                    Create New
+                    Criar {{ createModelText }}
                 </button>
             </div>
         </div>
@@ -47,7 +44,8 @@
             icon: String,
             heading: String,
             subheading: String,
-
+            canCreate: Boolean,
+            createModelText : String,
         }
     }
 </script>

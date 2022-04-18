@@ -2,6 +2,7 @@ import Vue from 'vue'
 import router from './router'
 
 import BootstrapVue from "bootstrap-vue"
+import VueAlertify from 'vue-alertify';
 
 import App from './App'
 
@@ -17,6 +18,7 @@ import Pages from './Layout/Wrappers/pagesLayout.vue';
 
 Vue.config.productionTip = false;
 
+Vue.use(VueAlertify);
 Vue.use(BootstrapVue);
 
 Vue.component('default-layout', Default);

@@ -22,7 +22,7 @@
                                             <b-col md="12">
                                                 <b-form-group>
                                                     <Label for="inputEmail">Email</Label>
-                                                    <b-form-input type="email" name="email" id="inputEmail" v-model="form.email"
+                                                    <b-form-input type="email" name="email" id="inputEmail" v-model="form.email" :state="errorMessage == '' ? null : false"
                                                                     placeholder="Digite seu e-mail..."/>
                                                 </b-form-group>
                                             </b-col>
@@ -97,7 +97,11 @@ export default {
             selfVue.showSuccess = false;
             selfVue.showError = true;
             if(error.response.data['message']){
-                selfVue.errorMessage = error.response.data['message'];
+                if(error.response.status == 422){
+                    selfVue.errorMessage = 'Email inválido!';
+                }else{
+                    selfVue.errorMessage = error.response.data['message'];
+                }
             }else{
                 selfVue.errorMessage = "Houve um erro ao solicitar a troca de senha, tente novamente mais tarde!";
             }

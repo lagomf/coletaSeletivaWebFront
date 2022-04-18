@@ -22,6 +22,7 @@
                                         <b-form-input id="emailInput"
                                                     type="email"
                                                     v-model="form.email"
+                                                    :state="formErrors.email == '' ? null : false"
                                                     required
                                                     placeholder="Digite seu e-mail...">
                                         </b-form-input>
@@ -33,6 +34,7 @@
                                                     type="text"
                                                     v-model="form.name"
                                                     required
+                                                    :state="formErrors.name == '' ? null : false"
                                                     placeholder="Digite com seu nome completo...">
                                         </b-form-input>
                                         <div class="invalid-feedback d-block"> {{ formErrors.name }} </div>
@@ -45,6 +47,7 @@
                                                             type="password"
                                                             v-model="form.password"
                                                             required
+                                                            :state="formErrors.password == '' ? null : false"
                                                             minlength="6"
                                                             placeholder="Digite uma senha...">
                                                 </b-form-input>
@@ -58,6 +61,7 @@
                                                             type="password"
                                                             v-model="form.password_confirmation"
                                                             required
+                                                            :state="formErrors.password == '' ? null : false"
                                                             minlength="6"
                                                             placeholder="Repita a senha...">
                                                 </b-form-input>

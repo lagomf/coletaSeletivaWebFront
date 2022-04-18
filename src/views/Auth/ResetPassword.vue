@@ -22,7 +22,7 @@
                                             <b-col md="12">
                                                 <b-form-group>
                                                     <Label for="inputEmail">Email</Label>
-                                                    <b-form-input type="email" name="email" id="inputEmail" v-model="form.email"
+                                                    <b-form-input type="email" name="email" id="inputEmail" v-model="form.email" :state="formErrors.email == '' ? null : false"
                                                                    required placeholder="Digite seu e-mail..."/>
                                                     <div class="invalid-feedback d-block"> {{ formErrors.email }} </div>
                                                 </b-form-group>
@@ -32,7 +32,7 @@
                                             <b-col md="6">
                                                 <b-form-group>
                                                     <Label for="inputPassword">Senha</Label>
-                                                    <b-form-input type="password" name="password" id="inputPassword" v-model="form.password"
+                                                    <b-form-input type="password" name="password" id="inputPassword" v-model="form.password" :state="formErrors.password == '' ? null : false"
                                                                    required minlength="6" placeholder="Digite a nova senha..."/>
                                                     <div class="invalid-feedback d-block"> {{ formErrors.password }} </div>
                                                 </b-form-group>
@@ -40,7 +40,7 @@
                                             <b-col md="6">
                                                 <b-form-group>
                                                     <Label for="inputPasswordConfirmation">Confirmação Senha</Label>
-                                                    <b-form-input type="password" name="password_confirmation" id="inputPasswordConfirmation" v-model="form.password_confirmation"
+                                                    <b-form-input type="password" name="password_confirmation" id="inputPasswordConfirmation" v-model="form.password_confirmation" :state="formErrors.password == '' ? null : false"
                                                                    required minlength="6" placeholder="Repita a nova senha..."/>
                                                 </b-form-group>
                                             </b-col>

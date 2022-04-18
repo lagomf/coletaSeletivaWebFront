@@ -40,7 +40,7 @@
                     },
                     {
                         title: 'Home',
-                        icon: 'pe-7s-rocket',
+                        icon: 'pe-7s-home',
                         href: '/home',
                     },
                     // {
@@ -60,13 +60,13 @@
                     },
                     {
                         title: 'Usuários',
-                        icon: 'pe-7s-rocket',
+                        icon: 'pe-7s-users',
                         href: '/users',
                         permission: 'view users'
                     },
                     {
                         title: 'Caminhões',
-                        icon: 'pe-7s-rocket',
+                        icon: 'pe-7s-car',
                         href: '/vehicles',
                         permission: 'view vehicles'
                     },
