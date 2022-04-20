@@ -28,7 +28,7 @@
                     <b-table responsive striped hover :items="users" :fields="fields">
                         <template #cell(actions)="row">
                             <router-link :to="{name:'usersShow',params:{id:row.item.id}}" class="btn btn-info mr-1 p-1"><i class="pe-7s-info text-white"></i></router-link>
-                            <b-button v-if="hasPermission('delete users')" @click="deleteUser(row.item)" class="mr-1 p-1">
+                            <b-button v-if="hasPermission('delete users') && !isUser(row.item.id)" @click="deleteUser(row.item)" class="mr-1 p-1">
                                 <i class="pe-7s-trash text-white"></i>
                             </b-button>
                         </template>
@@ -98,6 +98,9 @@
             this.getUsers();
         },
         methods: {
+            isUser(id){
+                return this.$store.getters.StateUser.id == id;
+            },
             hasPermission(permission){
                 if(this.$store.getters.StatePermissions){
                     return this.$store.getters.StatePermissions.includes(permission);
@@ -112,14 +115,32 @@
                     this.count = response.data['total'];
                     this.loading = false;
                 }, function(error){
-                    alert(error);
+                    error;
+                    this.$alertify.warning('Houve um erro');
                 });
             },
             createUser(){
                 this.$router.push({name:"usersCreate"});
             },
             deleteUser(item){
-                alert(item.name);
+                this.$alertify.confirm(
+                    `Deseja mesmo deletar "${item.name}"?`,
+                    function(){
+                        alert('oi');
+                        axios.delete(`/users/${item.id}`).then(response => {
+                            this.$alertify.success('Usuário deletado com sucesso!');
+                            this.loading = true;
+                            this.getUsers();
+                            response;
+                        }, function(error){
+                            this.$alertify.warning('Houve um erro');
+                            error;
+                        });
+                    },
+                    function(){
+                        alert('tchau');
+                    }
+                );
             },
             handlePageChange(value){
                 this.page = value;

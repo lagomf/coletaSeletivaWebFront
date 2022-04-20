@@ -208,6 +208,12 @@ const router = new Router({
             name: 'chartjs',
             component: () => import('../DemoPages/Charts/Chartjs.vue'),
         },
+        { 
+            path: '/:pathMatch(.*)*', 
+            name: 'NotFound', 
+            component: () => import('../views/NotFound.vue'),
+            meta: {layout: 'userpages'}
+        },
         {
             path: '*',
             component: () => import('../views/NotFound.vue'),

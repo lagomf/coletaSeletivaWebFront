@@ -56,7 +56,6 @@ new Vue({
         // Unauthenticated: force log out
         case 401:
           //check origin request
-          if (error.config.url.indexOf(window.location.host) === -1) return;
           store.commit('LogOut');
           this.$router.push({name:"login"});
       }
