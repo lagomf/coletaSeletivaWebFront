@@ -4,7 +4,7 @@
             <div class="card-header-tab card-header">
                 <div class="card-header-title font-size-lg text-capitalize font-weight-normal">
                     <i class="header-icon lnr-charts icon-gradient bg-happy-green"> </i>
-                    Usuário: {{form.name}}
+                    {{form.name}} <b-badge pill variant="info" class="text-white">{{ userRole }}</b-badge>
                 </div>
             </div>
             <b-overlay :show="loading" variant="transparent" rounded="sm">
@@ -15,7 +15,7 @@
                                 <b-form-group>
                                     <Label for="inputName">Nome Completo</Label>
                                     <b-form-input type="text" name="name" id="inputName" v-model="form.name" :state="formErrors.name == '' ? null : false"
-                                                :readonly="!editProfile" required placeholder="Digite o nome completo..."/>
+                                                :readonly="!editUser" required placeholder="Digite o nome completo..."/>
                                     <div class="invalid-feedback d-block"> {{ formErrors.name }} </div>
                                 </b-form-group>
                             </b-col>
@@ -25,14 +25,14 @@
                                 <b-form-group>
                                     <Label for="inputEmail">E-mail</Label>
                                     <b-form-input type="email" name="email" id="inputEmail" v-model="form.email" :state="formErrors.email == '' ? null : false"
-                                                :readonly="!editProfile" required placeholder="Digite o e-mail..."/>
+                                                :readonly="!editUser" required placeholder="Digite o e-mail..."/>
                                     <div class="invalid-feedback d-block"> {{ formErrors.email }} </div>
                                 </b-form-group>
                             </b-col>
                         </b-row>
-                        <div v-if="editProfile" class="divider"/>
-                        <p v-if="editProfile">Preencha para trocar a senha</p>
-                        <b-row form v-if="editProfile">
+                        <div v-if="editUser" class="divider"/>
+                        <p v-if="editUser">Preencha para trocar a senha</p>
+                        <b-row form v-if="editUser">
                             <b-col md="6" sm="12">
                                 <b-form-group>
                                     <Label for="inputPassword">Senha</Label>
@@ -50,19 +50,28 @@
                                 </b-form-group>
                             </b-col>
                         </b-row>
+                        <div v-if="editUser && this.hasPermission('view roles')" class="divider"/>
+                        <p v-if="editUser && this.hasPermission('view roles')">Trocar cargo</p>
+                        <b-row form v-if="editUser && this.hasPermission('view roles')">
+                            <b-col>
+                                <b-form-group>
+                                    <b-form-select v-model="userRole" :options="roles" @input="updateUserRole()"></b-form-select>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
                         <p v-if="showError" id="error" class="text-danger">{{ errorMessage }}</p>
                     </div>
                     <div class="text-right d-block p-3 card-footer">
-                        <button v-if="!editProfile" class="btn-pill btn-shadow btn-wide fsize-1 btn btn-outline-danger btn-lg mr-2" type="button" @click="goBack()">
+                        <button v-if="!editUser" class="btn-pill btn-shadow btn-wide fsize-1 btn btn-outline-danger btn-lg mr-2" type="button" @click="goBack()">
                             Voltar
                         </button>
-                        <button v-if="!editProfile && this.hasPermission('update users') && !isUser(this.$route.params.id)" class="btn-pill btn-shadow btn-wide fsize-1 btn btn-info btn-lg text-white" type="button" @click="editProfile = true">
+                        <button v-if="!editUser && this.hasPermission('update users') && !isUser(this.$route.params.id)" class="btn-pill btn-shadow btn-wide fsize-1 btn btn-info btn-lg text-white" type="button" @click="editUser = true">
                             Editar
                         </button>
-                        <button v-if="editProfile" class="btn-pill btn-shadow btn-wide fsize-1 btn btn-danger btn-lg text-white mr-2" type="button" @click="editProfile = false">
+                        <button v-if="editUser" class="btn-pill btn-shadow btn-wide fsize-1 btn btn-danger btn-lg text-white mr-2" type="button" @click="editUser = false">
                             Cancelar
                         </button>
-                        <button v-if="editProfile" class="btn-pill btn-shadow btn-wide fsize-1 btn btn-success btn-lg text-white" type="submit">
+                        <button v-if="editUser" class="btn-pill btn-shadow btn-wide fsize-1 btn btn-success btn-lg text-white" type="submit">
                             Salvar
                         </button>
                     </div>
@@ -88,13 +97,17 @@
                     name: "",
                     password: "",
                 },
-                editProfile : false,
+                userRole: null,
+                editUser : false,
                 showError: false,
                 errorMessage: "",
                 loading: false,
             };
         },
         created() {
+            if(this.hasPermission('view roles')){
+                this.getRoles();
+            }
             this.getUser(this.$route.params.id);
             this.$watch(
             () => this.$route.params,
@@ -117,13 +130,31 @@
             goBack(){
                 this.$router.push({name: 'usersIndex'});
             },
+            getRoles(){
+                this.loading = true;
+                axios.get(`/roles`).then(response => {
+                    let index = 0;
+                    let array = [];
+                    while (index < response.data.length) {
+                        array[index] = {
+                            value: response.data[index].name,
+                            text: response.data[index].name,
+                        }
+                        index++;
+                    }
+                    this.roles = array;
+                }, function(error){
+                    this.$alertify.warning('Houve um erro');
+                    error;
+                });
+            },
             getUser(id){
                 this.loading = true;
                 let selfVue = this;
-                axios.get(`/users/${id}`).then(response => {
+                axios.get(`/users/${id}?include=roles`).then(response => {
                     this.form.email = response.data['email'];
                     this.form.name = response.data['name'];
-                    
+                    this.userRole = response.data['roles'][0] ? response.data['roles'][0]['name'] : 'Sem cargo';
                     this.loading = false;
                 }, function(error){
                     if(error.response.status == 404){
@@ -135,6 +166,8 @@
                             query: selfVue.$route.query,
                             hash: selfVue.$route.hash,
                         });
+                    }else{
+                        this.$alertify.warning('Houve um erro');
                     }
                 });
             },
@@ -153,7 +186,7 @@
                 await axios.patch(`users/${this.$route.params.id}`, form).then(response => {
                     this.showError = false;
                     this.loading = false;
-                    this.editProfile = false;
+                    this.editUser = false;
                     this.form.password = "";
                     this.form.password_confirmation = "";
                     this.$alertify.success('Usuário atualizado com sucesso!');
@@ -176,6 +209,28 @@
                             selfVue.errorMessage = "Houve um erro ao editar o usuário, tente novamente mais tarde!";
                         }
                     }
+                });
+            },
+            async updateUserRole(){
+                this.loading = true;
+                let selfVue = this;
+                let form = {
+                    role: this.userRole
+                }
+                await axios.patch(`users/${this.$route.params.id}/role`, form).then(response => {
+                    this.showError = false;
+                    this.loading = false;
+                    this.$alertify.success('Cargo atualizado com sucesso!');
+                    response;
+                },function (error) {
+                    selfVue.loading = false;
+                    selfVue.showError = true;
+                    if(error.response.data['message']){
+                        selfVue.errorMessage = error.response.data['message'];
+                    }else{
+                        selfVue.errorMessage = "Houve um erro ao atualizar o cargo, tente novamente mais tarde!";
+                    }
+                    
                 });
             }
         }

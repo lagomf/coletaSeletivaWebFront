@@ -52,6 +52,7 @@ new Vue({
     }, function (error) {
       // Any status codes that falls outside the range of 2xx cause this function to trigger
       // Do something with response error
+      self.console.log(error);
       switch (error.response.status) {
         // Unauthenticated: force log out
         case 401:

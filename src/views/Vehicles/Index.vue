@@ -4,15 +4,15 @@
             :heading="heading" 
             :subheading="subheading" 
             :icon="icon" 
-            createModelText='usuário'
-            :canCreate="hasPermission('create users')"
-            @createModelEvent="createUser">
+            createModelText='veículo'
+            :canCreate="hasPermission('create vehicles')"
+            @createModelEvent="createVehicle">
             </page-title>
         <div class="mb-3 card">
             <div class="card-header-tab card-header">
                 <div class="card-header-title font-size-lg text-capitalize font-weight-normal">
                     <i class="header-icon lnr-charts icon-gradient bg-happy-green"> </i>
-                    Usuários
+                    Veículos
                 </div>
             </div>
             
@@ -25,13 +25,14 @@
                     v-if="loading"
                 ></b-skeleton-table>
                 <div v-if="!loading">
-                    <b-table responsive striped hover :items="users" :fields="fields">
-                        <template #cell(roles)="row">
-                            <b-badge pill variant="info" class="text-white">{{ row.value[0] ? row.value[0]['name'] : 'Sem cargo' }}</b-badge>
+                    <b-table responsive striped hover :items="vehicles" :fields="fields">
+                        <template #cell(status)="row">
+                            <b-badge v-if="row.value" pill variant="success" class="text-white">Ativo</b-badge>
+                            <b-badge v-if="!row.value" pill variant="danger" class="text-white">Inativo</b-badge>
                         </template>
                         <template #cell(actions)="row">
-                            <router-link v-if="hasPermission('show users')" :to="{name:'usersShow',params:{id:row.item.id}}" class="btn btn-info mr-1 p-1"><i class="pe-7s-info text-white"></i></router-link>
-                            <b-button v-if="hasPermission('delete users') && !isUser(row.item.id)" @click="deleteUser(row.item)" class="mr-1 p-1">
+                            <router-link v-if="hasPermission('show vehicles')" :to="{name:'vehiclesShow',params:{id:row.item.id}}" class="btn btn-info mr-1 p-1"><i class="pe-7s-info text-white"></i></router-link>
+                            <b-button v-if="hasPermission('delete vehicles')" @click="deleteVehicle(row.item)" class="mr-1 p-1">
                                 <i class="pe-7s-trash text-white"></i>
                             </b-button>
                         </template>
@@ -59,11 +60,11 @@
             PageTitle,
         },
         data: () => ({
-            heading: 'Gerenciar usuários',
-            subheading: 'Adicionar, pesquisar, editar e deletar usuários.',
-            icon: 'pe-7s-users icon-gradient bg-tempting-azure',
+            heading: 'Gerenciar veículos',
+            subheading: 'Adicionar, pesquisar, editar e deletar veículos.',
+            icon: 'pe-7s-car icon-gradient bg-tempting-azure',
 
-            users : {
+            vehicles : {
 
             },
             pageSize: "",
@@ -80,12 +81,12 @@
                     'label':'Nome',
                 },
                 {
-                    'key':'email',
-                    'label':'E-mail',
+                    'key':'plate',
+                    'label':'Placa',
                 },
                 {
-                    'key':'roles',
-                    'label':'Cargo',
+                    'key':'status',
+                    'label':'Status',
                 },
                 {
                     'key':'created_at',
@@ -102,12 +103,9 @@
             ]
         }),
         mounted() {
-            this.getUsers();
+            this.getVehicles();
         },
         methods: {
-            isUser(id){
-                return this.$store.getters.StateUser.id == id;
-            },
             hasPermission(permission){
                 if(this.$store.getters.StatePermissions){
                     return this.$store.getters.StatePermissions.includes(permission);
@@ -115,9 +113,9 @@
                     return false;
                 }
             },
-            getUsers(){
-                axios.get(`/users?page=${this.page}&include=roles`).then(response => {
-                    this.users = response.data['data'];
+            getVehicles(){
+                axios.get(`/vehicles?page=${this.page}`).then(response => {
+                    this.vehicles = response.data['data'];
                     this.pageSize = response.data['per_page'];
                     this.count = response.data['total'];
                     this.loading = false;
@@ -126,29 +124,32 @@
                     this.$alertify.warning('Houve um erro');
                 });
             },
-            createUser(){
-                this.$router.push({name:"usersCreate"});
+            createVehicle(){
+                this.$router.push({name:"vehiclesCreate"});
             },
-            deleteUser(item){
+            deleteVehicle(item){
                 let selfVue = this;
                 this.$alertify.confirm(
                     `Deseja mesmo deletar "${item.name}"?`,
                     function(){
-                        axios.delete(`/users/${item.id}`).then(response => {
-                            selfVue.$alertify.success('Usuário deletado com sucesso!');
+                        axios.delete(`/vehicles/${item.id}`).then(response => {
+                            selfVue.$alertify.success('Veículo deletado com sucesso!');
                             selfVue.loading = true;
-                            selfVue.getUsers();
+                            selfVue.getVehicles();
                             response;
                         }, function(error){
                             selfVue.$alertify.warning('Houve um erro');
                             error;
                         });
+                    },
+                    function(){
+                        return;
                     }
                 );
             },
             handlePageChange(value){
                 this.page = value;
-                this.getUsers();
+                this.getVehicles();
             }
         }
 

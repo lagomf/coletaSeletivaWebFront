@@ -47,7 +47,6 @@
                                     <div class="float-left">
                                         <router-link :to="{name: 'recover-password'}" class="text-secondary">Esqueci minha senha</router-link>
                                     </div>
-                                    <font-awesome-icon class="mr-2" icon="spin"/>
                                     <div class="float-right">
                                         <b-button variant="primary" type="submit" size="lg">Login</b-button>
                                     </div>

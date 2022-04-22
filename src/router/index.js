@@ -65,9 +65,29 @@ const router = new Router({
         {
             path: '/users/:id',
             name: 'usersShow',
-            meta: {requiresAuth: true , permission: 'view users'},
+            meta: {requiresAuth: true , permission: 'show users'},
             component: () => import('../views/Users/Show.vue'),
         },
+        //Veículos
+        {
+            path: '/vehicles',
+            name: 'vehiclesIndex',
+            meta: {requiresAuth: true , permission: 'view vehicles'},
+            component: () => import('../views/Vehicles/Index.vue'),
+        },
+        {
+            path: '/vehicles/create',
+            name: 'vehiclesCreate',
+            meta: {requiresAuth: true , permission: 'create vehicles'},
+            component: () => import('../views/Vehicles/Create.vue'),
+        },
+        {
+            path: '/vehicles/:id',
+            name: 'vehiclesShow',
+            meta: {requiresAuth: true , permission: 'show vehicles'},
+            component: () => import('../views/Vehicles/Show.vue'),
+        },
+
         {
             path: '/pages/login-boxed',
             name: 'login-boxed',

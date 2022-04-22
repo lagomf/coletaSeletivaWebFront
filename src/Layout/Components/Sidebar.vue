@@ -65,7 +65,7 @@
                         permission: 'view users'
                     },
                     {
-                        title: 'Caminhões',
+                        title: 'Veículos',
                         icon: 'pe-7s-car',
                         href: '/vehicles',
                         permission: 'view vehicles'

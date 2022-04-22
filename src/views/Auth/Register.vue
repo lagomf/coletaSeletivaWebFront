@@ -114,10 +114,10 @@ export default {
   data() {
     return {
       form: {
-        email: "teste@gmail.com",
-        name: "Matheus Lago Frete",
-        password: "asfasjf",
-        password_confirmation: "asfasfiasf",
+        email: "",
+        name: "",
+        password: "",
+        password_confirmation: "",
       },
       formErrors: {
         email: "",
