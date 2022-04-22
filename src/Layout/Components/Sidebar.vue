@@ -77,7 +77,7 @@
                     {
                         title: 'Solicitações',
                         icon: 'pe-7s-rocket',
-                        href: '/vehicles',
+                        href: '/supportRequests',
                     },
                 ],
                 collapsed: true,
