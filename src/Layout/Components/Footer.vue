@@ -1,7 +1,9 @@
 <template>
     <div class="app-footer">
-        <div class="app-footer__inner text-center">
-            UTFPR - Toledo PR
+        <div class="app-footer__inner text-center row mx-0">
+            <div class="col">
+                UTFPR - Toledo PR
+            </div>
         </div>
     </div>
 </template>

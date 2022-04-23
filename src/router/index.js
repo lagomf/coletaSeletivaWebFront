@@ -68,7 +68,7 @@ const router = new Router({
             meta: {requiresAuth: true , permission: 'show users'},
             component: () => import('../views/Users/Show.vue'),
         },
-        //Veículos
+        //Vehicles
         {
             path: '/vehicles',
             name: 'vehiclesIndex',
@@ -87,6 +87,15 @@ const router = new Router({
             meta: {requiresAuth: true , permission: 'show vehicles'},
             component: () => import('../views/Vehicles/Show.vue'),
         },
+        //SupportRequests
+        {
+            path: '/supportRequests',
+            name: 'supportRequestsIndex',
+            meta: {requiresAuth: true},
+            component: () => import('../views/SupportRequests/Index.vue'),
+        },
+
+
 
         {
             path: '/pages/login-boxed',
