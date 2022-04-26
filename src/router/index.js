@@ -89,13 +89,23 @@ const router = new Router({
         },
         //SupportRequests
         {
-            path: '/supportRequests',
+            path: '/help',
             name: 'supportRequestsIndex',
-            meta: {requiresAuth: true},
+            meta: {requiresAuth: true, permission: 'create supportRequests'},
             component: () => import('../views/SupportRequests/Index.vue'),
         },
-
-
+        {
+            path: '/supportRequests',
+            name: 'supportRequestsIndexManager',
+            meta: {requiresAuth: true, permission: 'view supportRequests'},
+            component: () => import('../views/SupportRequests/IndexManager.vue'),
+        },
+        {
+            path: '/supportRequests/:id',
+            name: 'supportRequestsShow',
+            meta: {requiresAuth: true , permission: 'view supportRequests'},
+            component: () => import('../views/SupportRequests/Show.vue'),
+        },
 
         {
             path: '/pages/login-boxed',

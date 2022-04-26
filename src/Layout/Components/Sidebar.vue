@@ -71,13 +71,20 @@
                         permission: 'view vehicles'
                     },
                     {
+                        title: 'Solicitações',
+                        icon: 'pe-7s-help2',
+                        href: '/supportRequests',
+                        permission: 'view supportRequests'
+                    },
+                    {
                         header: true,
                         title: 'Suporte',
                     },
                     {
-                        title: 'Solicitações',
-                        icon: 'pe-7s-rocket',
-                        href: '/supportRequests',
+                        title: 'Ajuda',
+                        icon: 'pe-7s-help1',
+                        href: '/help',
+                        permission: 'create supportRequests'
                     },
                 ],
                 collapsed: true,

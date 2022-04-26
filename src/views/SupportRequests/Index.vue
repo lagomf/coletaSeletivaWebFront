@@ -181,7 +181,8 @@
                 return moment(String(value)).format('MM/DD/YYYY');
             },
             getSupportRequests(){
-                axios.get(`/supportRequests?page=${this.page}&f_params[orderBy][field]=id&f_params[orderBy][type]=DESC`).then(response => {
+                let requester_id = this.$store.getters.StateUser ? this.$store.getters.StateUser.id : null;
+                axios.get(`/supportRequests?requester_id=${requester_id}&page=${this.page}&f_params[orderBy][field]=id&f_params[orderBy][type]=DESC`).then(response => {
                     this.supportRequests = response.data['data'];
                     this.pageSize = response.data['per_page'];
                     this.count = response.data['total'];
