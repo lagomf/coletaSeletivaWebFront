@@ -15,6 +15,8 @@ axios.defaults.headers.common = {'Accept':'application/json'}
 
 import Default from './Layout/Wrappers/baseLayout.vue';
 import Pages from './Layout/Wrappers/pagesLayout.vue';
+import 'leaflet/dist/leaflet.css';
+import qs from "qs";
 
 Vue.config.productionTip = false;
 
@@ -35,6 +37,10 @@ new Vue({
     // Run before every axios request
     axios.interceptors.request.use(function (config) {
       // Do something before request is sent
+      config.paramsSerializer = function (params) {
+        return qs.stringify(params, {encode: false});
+      }
+
       if(store.getters.StateToken){
         config.headers["Authorization"] = `Bearer ${store.getters.StateToken}`;
       }
