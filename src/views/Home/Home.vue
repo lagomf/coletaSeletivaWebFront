@@ -2,12 +2,12 @@
     <div class="pb-2">
         <page-title :heading="heading" :subheading="subheading" :icon="icon"></page-title>
         <b-row class="mb-3">
-            <b-col cols="12" md="4" class="mb-3 mb-md-0 text-center text-md-left">
+            <b-col cols="12" md="4" class="mb-2 mb-md-0 text-center text-md-left">
                 <Label for="districtInput">Bairro</Label>
-                <b-form-select id="districtInput" v-model="districtSelected" :options="districtSelect" @change="getRoutes()"></b-form-select>
+                <b-form-select id="districtInput" v-model="districtSelected" :options="districtSelect" @change="daySelected=null;getRoutes();"></b-form-select>
             </b-col>
             <b-col cols="12" md="8" class="text-center text-md-left px-0 ">
-                <p class="mb-1 mb-md-2">Dia da semana</p>
+                <p class="mb-1 mb-md-2 pl-0 pl-md-3">Dia da semana</p>
                 <b-overlay :show="loading" variant="transparent" rounded="sm">
                     <template #overlay>
                         <div class="d-flex align-items-center">
