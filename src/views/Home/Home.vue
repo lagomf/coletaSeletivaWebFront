@@ -26,7 +26,22 @@
         <div style="height: 70vh;">
             <l-map style="height: 100%" :zoom="zoom" :center="center">
                 <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-                <l-polyline v-for="route in routes" :key="route.id" :lat-lngs="getCoordinates(route.coordinates)" :color="route.color" ></l-polyline>
+                <l-polyline v-for="route in routes" :key="'poly'+route.id" :lat-lngs="getCoordinates(route.coordinates)" :color="route.color" ></l-polyline>
+                <l-polyline-decorator
+                    v-for="route in routes" :key="'polyd'+route.id"
+                    :paths="getCoordinates(route.coordinates)"
+                    :patterns="parsePattern(route.color)"
+                ></l-polyline-decorator>
+                <l-marker v-for="route in routes" :key="'marker'+route.id" :lat-lng="getMarkerCoordinate(route.coordinates)" :name="route.name" >
+                    <l-popup>
+                        <div>
+                            <h6>Cronograma:</h6>
+                            <ul class="pl-3">
+                                <li v-for="day in route.days" :key="'li'+day.day">{{ parseWeekDay(day.day) }};</li>
+                            </ul>
+                        </div>
+                    </l-popup>
+                </l-marker>
             </l-map>
         </div>
     </div>
@@ -36,10 +51,11 @@
 
     import PageTitle from "../../Layout/Components/PageTitle.vue";
  
-    import { LMap, LTileLayer, LPolyline } from 'vue2-leaflet';
-    import { ALL } from 'leaflet-freedraw';
+    import { LMap, LTileLayer, LPolyline, LMarker, LPopup } from 'vue2-leaflet';
+    import Vue2LeafletPolylinedecorator from 'vue2-leaflet-polylinedecorator'
     import { Icon } from 'leaflet';
     import axios from 'axios';
+    import L from "leaflet";
     
     delete Icon.Default.prototype._getIconUrl;
     Icon.Default.mergeOptions({
@@ -52,7 +68,10 @@
             PageTitle,
             LMap,
             LTileLayer,
-            LPolyline
+            LPolyline,
+            LMarker, 
+            LPopup,
+            "l-polyline-decorator": Vue2LeafletPolylinedecorator,
         },
         data: () => ({
             heading: 'Bem vindo(a)!',
@@ -60,13 +79,12 @@
             icon: 'pe-7s-map-2 icon-gradient bg-tempting-azure',
             url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            markerLatLng: [51.5, -0.09],
+            markerLatLng: [-24.728290852779235, -53.73735017547846],
             zoom: 13,
             loading: false,
             center: [-24.728290852779235, -53.73735017547846],
             districts: null,
             routes: {},
-            mode: ALL,
             districtSelected: null,
             days: [
                 {value: null, label: 'Todos', label_small: 'Todos'},
@@ -121,7 +139,7 @@
             getRoutes(){
                 if(this.districtSelected){
                     let requestParams = {};
-                    requestParams.include = 'coordinates';
+                    requestParams.include = 'coordinates,days';
                     requestParams.districts = {};
                     requestParams.districts.id = this.districtSelected;
                     if(this.daySelected != null){
@@ -146,6 +164,32 @@
                         x['lat'],x['long']
                     ];
                 });
+            },
+
+            getMarkerCoordinate(data){
+                let index = Math.floor((data.length/2));
+                return [
+                    data[index]['lat'],data[index]['long']
+                ]
+            },
+
+            parseWeekDay(day){
+                let weekMap = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+
+                return weekMap[day];
+            },
+
+            parsePattern(color){
+                return [
+                    {
+                        offset: 12,
+                        repeat: 25,
+                        symbol: L.Symbol.arrowHead({
+                            pixelSize: 7,
+                            pathOptions: { color: color, weight: 2, stroke: true },
+                        }),
+                    },
+                ]
             }
         },
 
