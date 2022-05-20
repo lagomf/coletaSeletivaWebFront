@@ -37,6 +37,24 @@
                                 </b-form-group>
                             </b-col>
                         </b-row>
+                        <p> Dados de rastreamento: </p>
+                        <b-row form>
+                            <b-col md="6" sm="12">
+                                <b-form-group>
+                                    <Label for="inpuProvider">Provedor</Label>
+                                    <b-form-select :disabled="!editVehicle" name="provider" id="inpuProvider" required v-model="form.provider_id" :options="providers" :state="formErrors.provider_id == null ? null : false"></b-form-select>
+                                    <div class="invalid-feedback d-block"> {{ formErrors.provider_id }} </div>
+                                </b-form-group>
+                            </b-col>
+                            <b-col md="6" sm="12">
+                                <b-form-group>
+                                    <Label for="inputSensor">Sensor</Label>
+                                    <b-form-input type="text" name="sensor_identifier" id="inputSensor" v-model="form.sensor_identifier" :state="formErrors.sensor_identifier == '' ? null : false"
+                                                :readonly="!editVehicle" required placeholder="Digite o identificador do sensor..."/>
+                                    <div class="invalid-feedback d-block"> {{ formErrors.sensor_identifier }} </div>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
                         <p v-if="showError" id="error" class="text-danger">{{ errorMessage }}</p>
                     </div>
                     <div class="text-right d-block p-3 card-footer">
@@ -68,11 +86,15 @@
                     plate: "",
                     name : "",
                     status: "",
+                    provider_id : 1,
+                    sensor_identifier: "",
                 },
                 formErrors: {
                     plate: "",
                     name: "",
                     status: "",
+                    provider_id : null,
+                    sensor_identifier: "",
                 },
                 statusOptions: [
                     { value: 0, text: 'Inativo' },
@@ -82,9 +104,11 @@
                 showError: false,
                 errorMessage: "",
                 loading: false,
+                providers: null,
             };
         },
         created() {
+            this.getSensorProviders();
             this.getVehicle(this.$route.params.id);
             this.$watch(
             () => this.$route.params,
@@ -111,6 +135,8 @@
                     this.form.plate = response.data['plate'];
                     this.form.name = response.data['name'];
                     this.form.status = response.data['status'];
+                    this.form.provider_id = response.data['provider_id'];
+                    this.form.sensor_identifier = response.data['sensor_identifier'];
                     this.loading = false;
                 }, function(error){
                     if(error.response.status == 404){
@@ -154,6 +180,27 @@
                             selfVue.errorMessage = "Houve um erro ao editar o veículo, tente novamente mais tarde!";
                         }
                     }
+                });
+            },
+
+            getSensorProviders(){
+                this.loading = true;
+
+                axios.get('sensorProviders').then(response => {
+                    let index = 0;
+                    let array = [];
+                    while (index < response.data.length) {
+                        array[index] = {
+                            value: response.data[index].id,
+                            text: response.data[index].name,
+                        }
+                        index++;
+                    }
+                    this.providers = array;
+                    this.loading = false;
+                    
+                }, function (){
+                    this.$alertify.warning('Houve um erro');
                 });
             }
         }

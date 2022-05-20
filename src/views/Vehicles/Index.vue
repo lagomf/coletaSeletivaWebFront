@@ -85,6 +85,13 @@
                     'label':'Placa',
                 },
                 {
+                    'key':'provider',
+                    'label':'Rastreamento',
+                    formatter: (value) => {
+                        return value.name;
+                    }
+                },
+                {
                     'key':'status',
                     'label':'Status',
                 },
@@ -114,7 +121,7 @@
                 }
             },
             getVehicles(){
-                axios.get(`/vehicles?page=${this.page}`).then(response => {
+                axios.get(`/vehicles?include=provider&page=${this.page}`).then(response => {
                     this.vehicles = response.data['data'];
                     this.pageSize = response.data['per_page'];
                     this.count = response.data['total'];
