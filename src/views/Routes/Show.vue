@@ -4,18 +4,18 @@
             <div class="card-header-tab card-header">
                 <div class="card-header-title font-size-lg text-capitalize font-weight-normal">
                     <i class="header-icon lnr-charts icon-gradient bg-happy-green"> </i>
-                    Criar Rota
+                    {{form.name}}
                 </div>
             </div>
             <b-overlay :show="loading" variant="transparent" rounded="sm">
-                <form @submit.prevent="createRoute">
+                <form @submit.prevent="updateRoute">
                     <div class="card-body">
                         <b-row form>
                             <b-col md="12">
                                 <b-form-group>
                                     <Label for="inputName">Nome</Label>
                                     <b-form-input type="text" name="name" id="inputName" v-model="form.name" :state="formErrors.name == '' ? null : false"
-                                                required placeholder="Digite o nome da rota..."/>
+                                                :readonly="!editRoute" required placeholder="Digite o nome da rota..."/>
                                     <div class="invalid-feedback d-block"> {{ formErrors.name }} </div>
                                 </b-form-group>
                             </b-col>
@@ -25,7 +25,7 @@
                                 <b-form-group>
                                     <Label for="inputColor">Cor</Label>
                                     <b-form-input type="text" name="color" id="inputColor" v-model="form.color" :state="formErrors.color == '' ? null : false"
-                                                required placeholder="Digite a cor..."/>
+                                                :readonly="!editRoute" required placeholder="Digite a cor..."/>
                                     <div class="invalid-feedback d-block"> {{ formErrors.color }} </div>
                                 </b-form-group>
                             </b-col>
@@ -42,27 +42,31 @@
                                     :options="days"
                                     name="days"
                                     buttons
+                                    v-if="editRoute"
                                 ></b-form-checkbox-group>
+                                <div v-if="!editRoute">
+                                <b-badge variant="primary"  class="m-1" v-for="day in form.days" :key="'day'+day">{{days[day].text}}</b-badge>
+                                </div>
                                 <div class="invalid-feedback d-block"> {{ formErrors.days }} </div>
                             </b-col>
                         </b-row>
                         <div class="divider"/>
                         <p> Bairros: </p>
                         <b-row form>
-                            <b-col md="6" sm="12">
+                            <b-col md="6" sm="12" v-if="editRoute">
                                 <multiselect v-model="form.districts" :options="districts" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Selecione os barriros" label="name" track-by="name">
                                     <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} bairro(s) selecionados</span></template>
                                 </multiselect>
                                 <div class="invalid-feedback d-block"> {{ formErrors.districts }} </div>
                             </b-col>
-                            <b-col md="6" sm="12">
+                            <b-col :md="editRoute ? '6' : '12'" sm="12">
                                 <b-badge variant="primary" class="m-1" v-for="district in form.districts" :key="'dis'+district.value">{{district.name}}</b-badge>
                             </b-col>
                         </b-row>
                         <div class="divider"/>
                         <p> Coordenadas: </p>
                         <b-row form>
-                            <b-col md="4" sm="12" class="mb-sm-3">
+                            <b-col md="4" sm="12" class="mb-sm-3" v-if="editRoute">
                                 <b-form-textarea
                                     id="coordinates"
                                     v-model="form.coordinates"
@@ -74,7 +78,7 @@
                                 ></b-form-textarea>
                                 <div class="invalid-feedback d-block"> {{ formErrors.coordinates }} </div>
                             </b-col>
-                            <b-col md="8" sm="12">
+                            <b-col :md="editRoute ? '8' : '12'" sm="12">
                                 <div style="height: 70vh;">
                                     <l-map style="height: 100%; z-index: 1" :zoom="zoom" :center="center">
                                         <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
@@ -90,10 +94,16 @@
                         <p v-if="showError" id="error" class="text-danger">{{ errorMessage }}</p>
                     </div>
                     <div class="text-right d-block p-3 card-footer">
-                        <button class="btn-pill btn-shadow btn-wide fsize-1 btn btn-outline-danger btn-lg mr-2" type="button" @click="goBack()">
+                        <button v-if="!editRoute" class="btn-pill btn-shadow btn-wide fsize-1 btn btn-outline-danger btn-lg mr-2" type="button" @click="goBack()">
                             Voltar
                         </button>
-                        <button class="btn-pill btn-shadow btn-wide fsize-1 btn btn-success btn-lg text-white" type="submit">
+                        <button v-if="!editRoute && this.hasPermission('update routes')" class="btn-pill btn-shadow btn-wide fsize-1 btn btn-info btn-lg text-white" type="button" @click="editRoute = true">
+                            Editar
+                        </button>
+                        <button v-if="editRoute" class="btn-pill btn-shadow btn-wide fsize-1 btn btn-danger btn-lg text-white mr-2" type="button" @click="editRoute = false">
+                            Cancelar
+                        </button>
+                        <button v-if="editRoute" class="btn-pill btn-shadow btn-wide fsize-1 btn btn-success btn-lg text-white" type="submit">
                             Salvar
                         </button>
                     </div>
@@ -120,7 +130,7 @@
         data() {
             return {
                 form: {
-                    color: "#FF0000",
+                    color: "",
                     name : "",
                     days : [],
                     districts: [],
@@ -150,10 +160,18 @@
                 attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
                 center: [-24.728290852779235, -53.73735017547846],
                 zoom: 13,
+                editRoute: false,
             };
         },
         created() {
             this.getDistricts();
+            this.getRoute(this.$route.params.id);
+            this.$watch(
+            () => this.$route.params,
+            (toParams) => {
+                this.getRoute(toParams.id);
+            }
+            )
         },
         computed: {
             getDistrictsIds(){
@@ -184,10 +202,39 @@
             }
         },
         methods: {
+            hasPermission(permission){
+                if(this.$store.getters.StatePermissions){
+                    return this.$store.getters.StatePermissions.includes(permission);
+                }else{
+                    return false;
+                }
+            },
             goBack(){
                 this.$router.push({name: 'routesIndex'});
             },
-            async createRoute(){
+            parseDays(data){
+                return data.map(function(value){
+                    return value.day;
+                });
+            },
+            parseDistricts(data){
+                return data.map(function(value){
+                    return {
+                        value: value.id,
+                        name: value.name
+                    }
+                });
+            },
+            parseCoordinates(data){
+                let index = 0;
+                let content = "";
+                while (index < data.length) {
+                    content = content + data[index].lat + "," + data[index].long + "\n";
+                    index++;
+                }
+                return content;
+            },
+            async updateRoute(){
                 this.loading = true;
                 let selfVue = this;
                 let parsedForm = {
@@ -204,17 +251,11 @@
                     districts: "",
                     coordinates: "",
                 };
-                await axios.post(`routes`, parsedForm).then(response => {
+                await axios.patch(`routes/${this.$route.params.id}`, parsedForm).then(response => {
                     this.showError = false;
                     this.loading = false;
-                    this.form = {
-                        color: "#",
-                        name : "",
-                        days : [],
-                        districts: [],
-                        coordinates: "",
-                    };
-                    this.$alertify.success('Rota criada com sucesso!');
+                    this.editRoute = false;
+                    this.$alertify.success('Rota atualizada com sucesso!');
                     response;
                 },function (error) {
                     selfVue.loading = false;
@@ -268,6 +309,32 @@
                         }),
                     },
                 ]
+            },
+
+            getRoute(id){
+                this.loading = true;
+                let selfVue = this;
+                axios.get(`/routes/${id}?include=days,districts,coordinates`).then(response => {
+                    this.form.name = response.data['name'];
+                    this.form.color = response.data['color'];
+                    this.form.days = this.parseDays(response.data['days']);
+                    this.form.districts = this.parseDistricts(response.data['districts']);
+                    this.form.coordinates = this.parseCoordinates(response.data['coordinates']);
+                    this.loading = false;
+                }, function(error){
+                    if(error.response.status == 404){
+                        selfVue.$router.push({
+                            name: 'NotFound',
+                            // preserve current path and remove the first char to avoid the target URL starting with `//`
+                            params: { pathMatch: selfVue.$route.path.substring(1).split('/') },
+                            // preserve existing query and hash if any
+                            query: selfVue.$route.query,
+                            hash: selfVue.$route.hash,
+                        });
+                    }else{
+                        selfVue.$alertify.warning('Houve um erro');
+                    }
+                });
             },
         }
     }

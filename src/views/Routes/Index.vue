@@ -27,7 +27,7 @@
                 <div v-if="!loading">
                     <b-table responsive striped hover :items="routes" :fields="fields">
                         <template #cell(actions)="row">
-                            <router-link v-if="hasPermission('show routes')" :to="{name:'vehiclesShow',params:{id:row.item.id}}" class="btn btn-info mr-1 p-1"><i class="pe-7s-info text-white"></i></router-link>
+                            <router-link v-if="hasPermission('show routes')" :to="{name:'routesShow',params:{id:row.item.id}}" class="btn btn-info mr-1 p-1"><i class="pe-7s-info text-white"></i></router-link>
                             <b-button v-if="hasPermission('delete routes')" @click="deleteRoute(row.item)" class="mr-1 p-1">
                                 <i class="pe-7s-trash text-white"></i>
                             </b-button>

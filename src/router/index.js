@@ -133,6 +133,13 @@ const router = new Router({
             component: () => import('../views/Routes/Create.vue'),
         },
         {
+            path: '/rotas/:id',
+            name: 'routesShow',
+            meta: {requiresAuth: true , permission: 'show routes'},
+            component: () => import('../views/Routes/Show.vue'),
+        },
+
+        {
             path: '/pages/login-boxed',
             name: 'login-boxed',
             meta: {layout: 'userpages'},
