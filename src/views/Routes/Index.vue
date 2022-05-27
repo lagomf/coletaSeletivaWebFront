@@ -57,7 +57,7 @@
         },
         data: () => ({
             heading: 'Gerenciar rotas',
-            subheading: 'Adicionar, pesquisar, editar e deletar rotas.',
+            subheading: 'Adicionar, pesquisar, editar e deletar rotas do cronograma.',
             icon: 'pe-7s-map-marker icon-gradient bg-tempting-azure',
 
             routes : {
