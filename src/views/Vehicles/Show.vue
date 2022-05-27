@@ -149,7 +149,7 @@
                             hash: selfVue.$route.hash,
                         });
                     }else{
-                        this.$alertify.warning('Houve um erro');
+                        selfVue.$alertify.warning('Houve um erro');
                     }
                 });
             },
@@ -185,7 +185,7 @@
 
             getSensorProviders(){
                 this.loading = true;
-
+                let selfVue = this;
                 axios.get('sensorProviders').then(response => {
                     let index = 0;
                     let array = [];
@@ -200,7 +200,7 @@
                     this.loading = false;
                     
                 }, function (){
-                    this.$alertify.warning('Houve um erro');
+                    selfVue.$alertify.warning('Houve um erro');
                 });
             }
         }

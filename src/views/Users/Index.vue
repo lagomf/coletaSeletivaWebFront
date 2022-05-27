@@ -116,6 +116,7 @@
                 }
             },
             getUsers(){
+                let selfVue = this;
                 axios.get(`/users?page=${this.page}&include=roles`).then(response => {
                     this.users = response.data['data'];
                     this.pageSize = response.data['per_page'];
@@ -123,7 +124,7 @@
                     this.loading = false;
                 }, function(error){
                     error;
-                    this.$alertify.warning('Houve um erro');
+                    selfVue.$alertify.warning('Houve um erro');
                 });
             },
             createUser(){

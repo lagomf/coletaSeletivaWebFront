@@ -191,7 +191,7 @@
                             hash: selfVue.$route.hash,
                         });
                     }else{
-                        this.$alertify.warning('Houve um erro');
+                        selfVue.$alertify.warning('Houve um erro');
                     }
                 });
             },

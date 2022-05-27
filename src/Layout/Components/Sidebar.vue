@@ -39,9 +39,14 @@
                         title: 'Geral',
                     },
                     {
-                        title: 'Home',
-                        icon: 'pe-7s-home',
-                        href: '/home',
+                        title: 'Cronograma',
+                        icon: 'pe-7s-date',
+                        href: '/cronograma',
+                    },
+                    {
+                        title: 'Histórico',
+                        icon: 'pe-7s-note2',
+                        href: '/historico',
                     },
                     // {
                     //     title: 'Dashboards',
@@ -61,20 +66,26 @@
                     {
                         title: 'Usuários',
                         icon: 'pe-7s-users',
-                        href: '/users',
+                        href: '/usuarios',
                         permission: 'view users'
                     },
                     {
                         title: 'Veículos',
                         icon: 'pe-7s-car',
-                        href: '/vehicles',
+                        href: '/veiculos',
                         permission: 'view vehicles'
                     },
                     {
                         title: 'Solicitações',
                         icon: 'pe-7s-help2',
-                        href: '/supportRequests',
+                        href: '/solicitacoes',
                         permission: 'view supportRequests'
+                    },
+                    {
+                        title: 'Rotas',
+                        icon: 'pe-7s-map-marker',
+                        href: '/rotas',
+                        permission: 'view routes'
                     },
                     {
                         header: true,
@@ -83,7 +94,7 @@
                     {
                         title: 'Ajuda',
                         icon: 'pe-7s-help1',
-                        href: '/help',
+                        href: '/ajuda',
                         permission: 'create supportRequests'
                     },
                 ],

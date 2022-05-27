@@ -75,7 +75,7 @@
         },
         data: () => ({
             heading: 'Bem vindo(a)!',
-            subheading: 'Aqui você pode acompanhar as rotas dos caminhões da coleta seletiva da cidade de Toledo.',
+            subheading: 'Aqui você pode acompanhar o cronograma das rotas dos caminhões da coleta seletiva da cidade de Toledo.',
             icon: 'pe-7s-map-2 icon-gradient bg-tempting-azure',
             url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -126,13 +126,14 @@
         },
         methods: {
             getDistricts(){
+                let selfVue = this;
                 this.loading = true;
                 axios.get(`/districts`).then(response => {
                     this.districts = response.data;
                     this.loading = false;
 
                 }, function(){
-                    this.$alertify.warning('Houve um erro');
+                    selfVue.$alertify.warning('Houve um erro');
                 });
             },
 
@@ -147,11 +148,12 @@
                         requestParams.days.day = this.daySelected;
                     }
                     this.loading = true;
+                    let selfVue = this;
                     axios.get(`/routes`,{params : requestParams}).then(response => {
                         this.routes = response.data['data'];
                         this.loading = false;
                     }, function(){
-                        this.$alertify.warning('Houve um erro');
+                        selfVue.$alertify.warning('Houve um erro');
                     });
                 }else{
                     this.routes = [];

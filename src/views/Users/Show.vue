@@ -132,6 +132,7 @@
             },
             getRoles(){
                 this.loading = true;
+                let selfVue = this;
                 axios.get(`/roles`).then(response => {
                     let index = 0;
                     let array = [];
@@ -144,7 +145,7 @@
                     }
                     this.roles = array;
                 }, function(error){
-                    this.$alertify.warning('Houve um erro');
+                    selfVue.$alertify.warning('Houve um erro');
                     error;
                 });
             },
@@ -167,7 +168,7 @@
                             hash: selfVue.$route.hash,
                         });
                     }else{
-                        this.$alertify.warning('Houve um erro');
+                        selfVue.$alertify.warning('Houve um erro');
                     }
                 });
             },

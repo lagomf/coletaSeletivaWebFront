@@ -4,9 +4,9 @@
             :heading="heading" 
             :subheading="subheading" 
             :icon="icon" 
-            createModelText='veículo'
-            :canCreate="hasPermission('create vehicles')"
-            @createModelEvent="createVehicle">
+            createModelText='rota'
+            :canCreate="hasPermission('create routes')"
+            @createModelEvent="createRoute">
             </page-title>
         <div class="mb-3 card">
             <div class="card-header-tab card-header">
@@ -25,15 +25,10 @@
                     v-if="loading"
                 ></b-skeleton-table>
                 <div v-if="!loading">
-                    <b-table responsive striped hover :items="vehicles" :fields="fields">
-                        <template #cell(status)="row">
-                            <b-badge v-if="row.value" pill variant="success" class="text-white">Ativo</b-badge>
-                            <b-badge v-if="!row.value" pill variant="danger" class="text-white">Inativo</b-badge>
-                        </template>
+                    <b-table responsive striped hover :items="routes" :fields="fields">
                         <template #cell(actions)="row">
-                            <router-link v-if="hasPermission('show vehicles')" :to="{name:'vehiclesShowHistory',params:{id:row.item.id}}" class="btn btn-warning mr-1 p-1"><i class="pe-7s-map-marker text-white"></i></router-link>
-                            <router-link v-if="hasPermission('show vehicles')" :to="{name:'vehiclesShow',params:{id:row.item.id}}" class="btn btn-info mr-1 p-1"><i class="pe-7s-info text-white"></i></router-link>
-                            <b-button v-if="hasPermission('delete vehicles')" @click="deleteVehicle(row.item)" class="mr-1 p-1">
+                            <router-link v-if="hasPermission('show routes')" :to="{name:'vehiclesShow',params:{id:row.item.id}}" class="btn btn-info mr-1 p-1"><i class="pe-7s-info text-white"></i></router-link>
+                            <b-button v-if="hasPermission('delete routes')" @click="deleteRoute(row.item)" class="mr-1 p-1">
                                 <i class="pe-7s-trash text-white"></i>
                             </b-button>
                         </template>
@@ -61,11 +56,11 @@
             PageTitle,
         },
         data: () => ({
-            heading: 'Gerenciar veículos',
-            subheading: 'Adicionar, pesquisar, editar e deletar veículos.',
-            icon: 'pe-7s-car icon-gradient bg-tempting-azure',
+            heading: 'Gerenciar rotas',
+            subheading: 'Adicionar, pesquisar, editar e deletar rotas.',
+            icon: 'pe-7s-map-marker icon-gradient bg-tempting-azure',
 
-            vehicles : {
+            routes : {
 
             },
             pageSize: "",
@@ -82,19 +77,18 @@
                     'label':'Nome',
                 },
                 {
-                    'key':'plate',
-                    'label':'Placa',
-                },
-                {
-                    'key':'provider',
-                    'label':'Rastreamento',
+                    'key':'districts',
+                    'label':'Bairros',
                     formatter: (value) => {
-                        return value.name;
+                        return value.length;
                     }
                 },
                 {
-                    'key':'status',
-                    'label':'Status',
+                    'key':'days',
+                    'label':'Dias',
+                    formatter: (value) => {
+                        return value.length;
+                    }
                 },
                 {
                     'key':'created_at',
@@ -111,7 +105,7 @@
             ]
         }),
         mounted() {
-            this.getVehicles();
+            this.getRoutes();
         },
         methods: {
             hasPermission(permission){
@@ -121,10 +115,10 @@
                     return false;
                 }
             },
-            getVehicles(){
+            getRoutes(){
                 let selfVue = this;
-                axios.get(`/vehicles?include=provider&page=${this.page}`).then(response => {
-                    this.vehicles = response.data['data'];
+                axios.get(`/routes?include=districts,days&page=${this.page}`).then(response => {
+                    this.routes = response.data['data'];
                     this.pageSize = response.data['per_page'];
                     this.count = response.data['total'];
                     this.loading = false;
@@ -133,18 +127,18 @@
                     selfVue.$alertify.warning('Houve um erro');
                 });
             },
-            createVehicle(){
-                this.$router.push({name:"vehiclesCreate"});
+            createRoute(){
+                this.$router.push({name:"routesCreate"});
             },
-            deleteVehicle(item){
+            deleteRoute(item){
                 let selfVue = this;
                 this.$alertify.confirm(
                     `Deseja mesmo deletar "${item.name}"?`,
                     function(){
-                        axios.delete(`/vehicles/${item.id}`).then(response => {
-                            selfVue.$alertify.success('Veículo deletado com sucesso!');
+                        axios.delete(`/routes/${item.id}`).then(response => {
+                            selfVue.$alertify.success('Rota deletada com sucesso!');
                             selfVue.loading = true;
-                            selfVue.getVehicles();
+                            selfVue.getRoutes();
                             response;
                         }, function(error){
                             selfVue.$alertify.warning('Houve um erro');
@@ -158,7 +152,7 @@
             },
             handlePageChange(value){
                 this.page = value;
-                this.getVehicles();
+                this.getRoutes();
             }
         }
 

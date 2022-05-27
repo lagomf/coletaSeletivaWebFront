@@ -17,7 +17,7 @@
                         
                         align="center"
                     >
-                        <b-card-text>A coleta seletiva não passou algum dia no endereço?</b-card-text>
+                        <b-card-text>A coleta seletiva não passou algum dia no seu endereço?</b-card-text>
                     </b-card>
                     <b-card
                         border-variant="primary"
@@ -31,7 +31,7 @@
                         
                         align="center"
                     >
-                        <b-card-text>Encontrou um problema nessa plataforma?</b-card-text>
+                        <b-card-text>Tem alguma sugestão de melhoria para esta plataforma?</b-card-text>
                     </b-card>
                 </b-card-group>
                 <div class="divider"/>
@@ -159,10 +159,10 @@
             },
             typeOptions: [
                 { value: null, text: 'Selecione uma categoria', disabled: true },
-                { value: 1, text: 'Geral' },
-                { value: 2, text: 'Categoria 1' },
-                { value: 3, text: 'Categoria 2' },
-                { value: 4, text: 'Categoria 3' }
+                { value: 1, text: 'Sugestão' },
+                { value: 2, text: 'Melhoria' },
+                { value: 3, text: 'Problema' },
+                { value: 4, text: 'Solicitação' }
             ],
             showError: false,
             errorMessage: "",
@@ -182,6 +182,7 @@
             },
             getSupportRequests(){
                 let requester_id = this.$store.getters.StateUser ? this.$store.getters.StateUser.id : null;
+                let selfVue = this;
                 axios.get(`/supportRequests?requester_id=${requester_id}&page=${this.page}&f_params[orderBy][field]=id&f_params[orderBy][type]=DESC`).then(response => {
                     this.supportRequests = response.data['data'];
                     this.pageSize = response.data['per_page'];
@@ -189,7 +190,7 @@
                     this.loadingList = false;
                 }, function(error){
                     error;
-                    this.$alertify.warning('Houve um erro');
+                    selfVue.$alertify.warning('Houve um erro');
                 });
             },
             async createSupportRequest(){

@@ -135,6 +135,7 @@
                 }
             },
             getSupportRequests(){
+                let selfVue = this;
                 axios.get(`/supportRequests?page=${this.page}&include=requester,responder`).then(response => {
                     this.vehicles = response.data['data'];
                     this.pageSize = response.data['per_page'];
@@ -142,7 +143,7 @@
                     this.loading = false;
                 }, function(error){
                     error;
-                    this.$alertify.warning('Houve um erro');
+                    selfVue.$alertify.warning('Houve um erro');
                 });
             },
             deleteSupportRequest(item){
@@ -168,13 +169,13 @@
             toTypeText(value){
                 switch(value){
                     case 1:
-                        return 'Geral';
+                        return 'Sugestão';
                     case 2:
-                        return 'Categoria 1';
+                        return 'Melhoria';
                     case 3:
-                        return 'Categoria 2';
+                        return 'Problema';
                     case 4:
-                        return 'Categoria 3';
+                        return 'Solicitação';
                     default:
                         return 'Indefinido';
                 }
